@@ -19,6 +19,6 @@ public record Currency
     public static Currency FromCode(string code)
     {
         return All.FirstOrDefault(x => x.Code == code) ??
-               throw new ApplicationException($"Invalid currency code: {code}");
+               throw new ArgumentException($"Invalid currency code: {code}");
     }
 }

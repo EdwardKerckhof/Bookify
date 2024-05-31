@@ -13,4 +13,9 @@ public record Money(decimal Amount, Currency Currency)
     }
 
     public static Money Zero() => new(0, Currency.None);
+
+    public static Money Add(Money left, Money right)
+    {
+        return left + right;
+    }
 }
