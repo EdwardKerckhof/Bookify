@@ -2,6 +2,6 @@
 
 public record Error(string Code, string Name)
 {
-    public static Error None = new(string.Empty, string.Empty);
-    public static Error NullValue = new("Error.NullValue", "Value cannot be null");
+    public static readonly Error None = new(string.Empty, string.Empty);
+    public static readonly Error NullValue = new("Error.NullValue", "Value cannot be null");
 }
