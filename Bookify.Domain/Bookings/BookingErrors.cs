@@ -8,7 +8,7 @@ public static class BookingErrors
         "Booking.NotFound",
         "The booking with the specified identifier was not found");
 
-    public static readonly Error Overlapping = new(
+    public static readonly Error Overlap = new(
         "Booking.Overlap",
         "The booking overlaps with an existing booking");
 
