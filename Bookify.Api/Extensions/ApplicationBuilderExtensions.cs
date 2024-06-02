@@ -1,5 +1,6 @@
 ﻿using Bogus;
 
+using Bookify.Api.Middleware;
 using Bookify.Application.Abstractions.Data;
 using Bookify.Domain.Apartments;
 using Bookify.Infrastructure;
@@ -19,6 +20,11 @@ public static class ApplicationBuilderExtensions
         using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         dbContext.Database.Migrate();
+    }
+
+    public static void UseCustomExceptionHandler(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
     }
 
     public static void SeedDatabase(this IApplicationBuilder app)
