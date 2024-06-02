@@ -1,4 +1,10 @@
-﻿using Bookify.Infrastructure;
+﻿using Bogus;
+
+using Bookify.Application.Abstractions.Data;
+using Bookify.Domain.Apartments;
+using Bookify.Infrastructure;
+
+using Dapper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -13,5 +19,45 @@ public static class ApplicationBuilderExtensions
         using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         dbContext.Database.Migrate();
+    }
+
+    public static void SeedDatabase(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+
+        var sqlConnectionFactory = scope.ServiceProvider.GetRequiredService<ISqlConnectionFactory>();
+        using var connection = sqlConnectionFactory.CreateConnection();
+
+        var faker = new Faker();
+
+        List<object> apartments = new();
+        for (var i = 0; i < 100; i++)
+        {
+            apartments.Add(new
+            {
+                Id = Guid.NewGuid(),
+                Name = faker.Company.CompanyName(),
+                Description = faker.Commerce.ProductDescription(),
+                Country = faker.Address.Country(),
+                State = faker.Address.State(),
+                ZipCode = faker.Address.ZipCode(),
+                City = faker.Address.City(),
+                Street = faker.Address.StreetName(),
+                PriceAmount = faker.Random.Decimal(50, 1000),
+                PriceCurrency = "EUR",
+                CleaningFeeAmount = faker.Random.Decimal(10, 100),
+                CleaningFeeCurrency = "EUR",
+                Amenities = new List<int> { (int)Amenity.Parking, (int)Amenity.MountainView },
+                LastBookedOn = DateTime.MinValue
+            });
+        }
+
+        const string sql = """
+                           INSERT INTO public.apartments
+                           (id, "name", description, address_country, address_state, address_zip_code, address_city, address_street, price_amount, price_currency, cleaning_fee_amount, cleaning_fee_currency, amenities, last_booked_on_utc)
+                           VALUES(@Id, @Name, @Description, @Country, @State, @ZipCode, @City, @Street, @PriceAmount, @PriceCurrency, @CleaningFeeAmount, @CleaningFeeCurrency, @Amenities, @LastBookedOn);
+                           """;
+
+        connection.Execute(sql, apartments);
     }
 }

@@ -23,3 +23,15 @@ services:
       - "5432:5432"
     volumes:
       - ./.containers/database:/var/lib/postgresql/data
+        
+  bookify.pgadmin:
+    image: dpage/pgadmin4
+    container_name: Bookify.PgAdmin
+    restart: unless-stopped
+    depends_on:
+      - bookify.db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=edward@test.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    ports:
+      - "8888:80"
