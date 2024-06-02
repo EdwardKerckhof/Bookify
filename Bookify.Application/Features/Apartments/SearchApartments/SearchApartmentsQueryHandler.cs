@@ -27,7 +27,6 @@ internal sealed class SearchApartmentsQueryHandler : IQueryHandler<SearchApartme
 
         using var connection = _sqlConnectionFactory.CreateConnection();
 
-        // I do not like this Dapper approach, might change back to EF Core or use a DB view
         const string sql = """
                            SELECT
                                a.id AS Id,
