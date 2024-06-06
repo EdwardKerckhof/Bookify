@@ -27,11 +27,17 @@ public class ExceptionHandlingMiddleware
 
             var exceptionDetails = GetExceptionDetails(ex);
 
-            var problemDetails = new ProblemDetails { Status = exceptionDetails.Status, Type = exceptionDetails.Type, Title = exceptionDetails.Title, Detail = exceptionDetails.Detail };
+            var problemDetails = new ProblemDetails
+            {
+                Status = exceptionDetails.Status,
+                Type = exceptionDetails.Type,
+                Title = exceptionDetails.Title,
+                Detail = exceptionDetails.Detail
+            };
 
             if (exceptionDetails.Errors is not null)
             {
-                problemDetails.Extensions.Add("errors", exceptionDetails.Errors);
+                problemDetails.Extensions["errors"] = exceptionDetails.Errors;
             }
 
             context.Response.StatusCode = exceptionDetails.Status;
